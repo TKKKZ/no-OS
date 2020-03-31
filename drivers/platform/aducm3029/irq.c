@@ -227,16 +227,10 @@ int32_t irq_unregister(struct irq_ctrl_desc *desc, uint32_t irq_id)
  */
 int32_t irq_global_enable(struct irq_ctrl_desc *desc)
 {
-	struct aducm_irq_ctrl_desc *aducm_desc;
-	if (!desc || !desc->extra || !initialized)
-		return FAILURE;
+	uint32_t i;
 
-	aducm_desc = desc->extra;
-	for (uint32_t i = 0; i < NB_EXT_INTERRUPTS; i++)
-		if (aducm_desc->enabled & (1u << i))
-			NVIC_EnableIRQ(BASE_XINT_NB + i);
-	if (aducm_desc->enabled & (1u << ADUCM_UART_INT_ID))
-		irq_enable(desc, ADUCM_UART_INT_ID);
+	for (i =  0; i < 64; i++)
+		NVIC_EnableIRQ(i);
 
 	return SUCCESS;
 }
@@ -248,16 +242,10 @@ int32_t irq_global_enable(struct irq_ctrl_desc *desc)
  */
 int32_t irq_global_disable(struct irq_ctrl_desc *desc)
 {
-	struct aducm_irq_ctrl_desc *aducm_desc;
-	if (!desc || !desc->extra || !initialized)
-		return FAILURE;
+	uint32_t i;
 
-	aducm_desc = desc->extra;
-	for (uint32_t i = 0; i < NB_EXT_INTERRUPTS; i++)
-		if (aducm_desc->enabled & (1u << i))
-			NVIC_DisableIRQ(BASE_XINT_NB + i);
-	if (aducm_desc->enabled & (1u << ADUCM_UART_INT_ID))
-		irq_disable(desc, ADUCM_UART_INT_ID);
+	for (i =  0; i < 64; i++)
+		NVIC_DisableIRQ(i);
 
 	return SUCCESS;
 }
